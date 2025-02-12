@@ -1,7 +1,7 @@
 <script setup>
-import { CameraControls, BaseCameraControls } from '@tresjs/cientos'
+import {CameraControls, BaseCameraControls} from '@tresjs/cientos'
 import {onMounted, onUnmounted, reactive, ref, watch} from 'vue'
-import { positionData, setupControls, removeControls } from './playerControls.js'
+import {positionData, setupControls, removeControls} from './playerControls.js'
 import {updateCameraPosition} from './cameraControls.js'
 
 const DRAG_SENSITIVITY = 1.50
@@ -18,7 +18,7 @@ const lastY = ref(0)
 const currentDistance = ref(10)
 
 const controlsRef = ref(null);
-const offsetPos = reactive({ x: 0, y: 0, z: 0 });
+const offsetPos = reactive({x: 0, y: 0, z: 0});
 
 const onReady = (instance) => {
   controlsRef.value = instance;
@@ -85,7 +85,7 @@ onMounted(() => {
               cameraControl.polarAngle - deltaY))
       cameraControl.polarAngle = newPolarAngle
     }
-
+    setOffset();
     cameraControl.update()
 
     lastAngle.value = currentAngle
@@ -175,23 +175,23 @@ onMounted(() => {
   onReady(controlsRef.value?.instance)
 })
 
-watch(positionData, (newPosition) => {
+const setOffset = () => {
   const target = controlsRef.value.instance._target;
   const cameraPosition = controlsRef.value.instance._camera.position;
 
   // Calculate offset from camera to target (reversed from your original)
-  if (target.x !== null && cameraPosition.x !== null && !isNaN(target.x) && !isNaN(cameraPosition.x)) {
-    offsetPos.x = cameraPosition.x - target.x;
-  }
-  if (target.y !== null && cameraPosition.y !== null && !isNaN(target.y) && !isNaN(cameraPosition.y)) {
-    offsetPos.y = cameraPosition.y - target.y;
-  }
-  if (target.z !== null && cameraPosition.z !== null && !isNaN(target.z) && !isNaN(cameraPosition.z)) {
-    offsetPos.z = cameraPosition.z - target.z;
-  }
-  console.log('offsetPos', offsetPos);
+  offsetPos.x = (!isNaN(target.x) && !isNaN(cameraPosition.x)) ? cameraPosition.x - target.x : 0;
+  offsetPos.y = (!isNaN(target.y) && !isNaN(cameraPosition.y)) ? cameraPosition.y - target.y : 0;
+  offsetPos.z = (!isNaN(target.z) && !isNaN(cameraPosition.z)) ? cameraPosition.z - target.z : 0;
+};
+
+watch(positionData, (newPosition) => {
+  setOffset();
   updateCameraPosition(newPosition, offsetPos, controlsRef.value.instance);
-}, { deep: true });
+  if (controlsRef.value?.instance) {
+    controlsRef.value.instance.setTarget(newPosition.x, newPosition.y, newPosition.z);
+  }
+}, {deep: true});
 </script>
 
 <template>
