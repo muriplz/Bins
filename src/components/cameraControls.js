@@ -1,26 +1,26 @@
+import * as THREE from 'three';
+
+const targetPosition = new THREE.Vector3();
 
 export const updateCameraPosition = (position, offset, cameraControls) => {
-    if (!cameraControls) return
+    if (!cameraControls) return;
 
-    const targetX = position.x
-    const targetZ = position.z
+    // Set target to player position
+    targetPosition.set(
+        position.x,
+        position.y + 1.5, // Adjust for player height
+        position.z
+    );
 
-    const cameraX = position.x + offset.x
-    const cameraZ = position.z + offset.z
+    // Calculate desired camera position based on offset
+    const desiredX = position.x + offset.x;
+    const desiredY = position.y + offset.y;
+    const desiredZ = position.z + offset.z;
 
-    // Validate positions to avoid NaN values
-    if (isNaN(cameraX) || isNaN(cameraZ) || isNaN(targetX) || isNaN(targetZ)) {
-        console.error('Invalid camera or target position:', { cameraX, cameraZ, targetX, targetZ });
-        return
-    }
-
-    return cameraControls.setLookAt(
-        cameraX,
-        cameraControls._camera.position.y,
-        cameraZ,
-        targetX,
-        1.5,
-        targetZ,
-        true // Enable smooth transition
-    )
-}
+    // Update the camera position and target
+    cameraControls.setLookAt(
+        desiredX, desiredY, desiredZ, // Camera position
+        targetPosition.x, targetPosition.y, targetPosition.z, // Target position
+        true
+    );
+};
