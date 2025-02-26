@@ -1,3 +1,4 @@
+// src/components/InfinitePlane.vue
 <script setup>
 import { onMounted, ref } from 'vue'
 import * as THREE from 'three'
@@ -47,7 +48,7 @@ onMounted(() => {
 
   const mesh = new THREE.Mesh(geometry, material)
   mesh.rotation.x = -Math.PI / 2
-  mesh.position.y = -0.01
+  mesh.position.y = -5
   mesh.renderOrder = -1
   gridRef.value = mesh
   scene.value.add(mesh)

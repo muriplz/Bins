@@ -5,7 +5,7 @@ const positionData = reactive({ x: 0, y: 0, z: 0 });
 const position = new THREE.Vector3(0, 0, 0);
 const velocity = reactive(new THREE.Vector3(0, 0, 0));
 const acceleration = 0.01;
-const maxSpeed = 0.2;
+const maxSpeed = 0.8;
 const keys = {};
 
 // Store camera direction

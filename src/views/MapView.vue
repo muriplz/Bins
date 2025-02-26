@@ -1,27 +1,70 @@
+// src/views/MapView.vue
 <script setup>
 import { TresCanvas } from '@tresjs/core'
-import OrbitControls from "../components/OrbitControls.vue"
+import OrbitControls from "../components/player/OrbitControls.vue"
 import { Sky, Stats } from '@tresjs/cientos'
-import PlayerEntity from "../components/PlayerEntity.vue"
-import InfinitePlane from "../components/InfinitePlane.vue"
-import { Cylinder } from '@tresjs/cientos'
+import PlayerEntity from "../components/player/PlayerEntity.vue"
+import TileRenderer from "../components/TileRenderer.vue"
+import { ref, onMounted } from 'vue'
+import InfinitePlane from "../components/InfinitePlane.vue";
 
+const showDebugInfo = ref(false)
+
+onMounted(() => {
+  // Add keyboard shortcut to toggle debug info
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'F3') {
+      showDebugInfo.value = !showDebugInfo.value
+    }
+  })
+})
 </script>
 
 <template>
-  <TresCanvas window-size>
-    <Sky/>
-    <Stats/>
-    <TresPerspectiveCamera :args="[45, 1, 0.1, 1000]" ref=""/>
-    <PlayerEntity/>
-    <OrbitControls/>
-    <InfinitePlane/>
-    <Cylinder :args="[1, 1, 3, 32]">
-      <TresMeshToonMaterial :color="'green'"/>
-    </Cylinder>
-    <TresAmbientLight :intensity="1"/>
-  </TresCanvas>
+  <div class="map-container">
+    <TresCanvas window-size>
+      <Sky/>
+      <Stats v-if="showDebugInfo"/>
+      <TresPerspectiveCamera :args="[45, 1, 0.1, 1000]"/>
+      <PlayerEntity/>
+      <OrbitControls/>
+      <TileRenderer />
+      <InfinitePlane/>
+      <TresAmbientLight :intensity="1"/>
+      <TresDirectionalLight :position="[10, 10, 10]" :intensity="0.8" cast-shadow/>
+    </TresCanvas>
+
+    <div v-if="showDebugInfo" class="debug-overlay">
+      <div class="debug-info">
+        <p>Debug Mode: ON (F3)</p>
+        <p>Controls: WASD to move</p>
+        <p>F4: Toggle tile debug</p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.debug-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  z-index: 1000;
+}
+
+.debug-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
 </style>
