@@ -7,6 +7,7 @@ import PlayerEntity from "../components/player/PlayerEntity.vue"
 import TileRenderer from "../components/TileRenderer.vue"
 import {onMounted, ref} from 'vue'
 import InfinitePlane from "../components/InfinitePlane.vue";
+import Menu from "../components/ui/Menu.vue";
 
 const showDebugInfo = ref(false)
 
@@ -21,6 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
+
   <div class="map-container">
     <TresCanvas window-size>
       <Sky/>
@@ -32,6 +34,7 @@ onMounted(() => {
       <InfinitePlane/>
       <TresAmbientLight :intensity="1"/>
       <TresDirectionalLight :position="[10, 10, 10]" :intensity="0.8" cast-shadow/>
+
     </TresCanvas>
 
     <div v-if="showDebugInfo" class="debug-overlay">

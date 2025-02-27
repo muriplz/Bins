@@ -13,7 +13,8 @@
     "vue-router": "^4.2.5",
     "@tresjs/core": "^4.3.3",
     "@tresjs/cientos": "^4.1.0",
-    "three": "^0.153.0"
+    "three": "^0.153.0",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",

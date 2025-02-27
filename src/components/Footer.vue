@@ -1,11 +1,10 @@
 <script setup>
-import AddCanButton from "./button/AddCanButton.vue";
+import Menu from "./ui/Menu.vue";
 </script>
 
 <template>
   <footer>
-    <a href="https://github.com/muriplz/bins">Github</a>
-    <AddCanButton />
+    <Menu/>
 
   </footer>
 </template>
