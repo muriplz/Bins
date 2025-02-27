@@ -7,8 +7,12 @@ class Store {
         };
     }
 
-    setUser(username) {
-        this.state.user = new User(username);
+    setUser(username, creation, trust) {
+        this.state.user = new User(username, creation, trust);
+    }
+
+    removeUser() {
+        this.state.user = null;
     }
 
     getUser() {

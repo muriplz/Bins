@@ -18,9 +18,9 @@ class AuthService {
             });
 
             if (response.status === 200) {
-                const { token, username } = await response.json();
+                const { token, username, creation, trust } = await response.json();
                 this.saveToken(token);
-                Store.setUser(username);
+                Store.setUser(username, creation, trust);
                 return true;
             } else {
                 return false;
@@ -45,7 +45,12 @@ class AuthService {
                 )
             });
 
-            return response.status === 201;
+            if (response.status === 201) {
+                await this.login(username, password);
+                return true;
+            } else {
+                return false;
+            }
         } catch (error) {
             return false;
         }
@@ -61,7 +66,13 @@ class AuthService {
                 credentials: 'include',
             });
 
-            return response.status === 200;
+            if (response.status === 200) {
+                const { username, creation, trust } = await response.json();
+                Store.setUser(username, creation, trust);
+                return true;
+            } else {
+                return false;
+            }
         } catch (error) {
             return false;
         }
@@ -74,10 +85,10 @@ class AuthService {
     }
 
     getToken() {
-        const cookies = document.cookie.split('; ');
+        const cookies = document.cookie.split('; ')
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i];
-            const [name, value] = cookie.split('=');
+            const [name, value] = cookie.split('=')
             if (name === 'auth') {
                 return value;
             }
@@ -86,8 +97,9 @@ class AuthService {
     }
 
     logout() {
-        document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        Store.removeUser()
+        document.cookie = 'auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
     }
 }
 
-export default new AuthService();
+export default new AuthService()

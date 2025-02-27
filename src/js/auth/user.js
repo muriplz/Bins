@@ -1,6 +1,8 @@
 class User {
-    constructor(username) {
+    constructor(username, creation, trust) {
         this.username = username;
+        this.creation = creation;
+        this.trust = trust;
     }
 }
 

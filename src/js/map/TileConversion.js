@@ -1,12 +1,38 @@
-// TileConversion.js - Fixed version
-// Define the world origin (geographic coordinates of the center of your game world)
-export const WORLD_ORIGIN = {
-    lat: 43.4623, // Santander
-    lon: -3.8098,
+// TileConversion.js - With dynamic origin support
+// Define the default world origin (Badajoz)
+export const DEFAULT_ORIGIN = {
+    lat: 38.8794,
+    lon: -6.9706,
+};
+
+// Dynamic origin that can be set once when GPS is activated
+export let WORLD_ORIGIN = {
+    lat: DEFAULT_ORIGIN.lat,
+    lon: DEFAULT_ORIGIN.lon,
+    isCustom: false
 };
 
 // Fixed zoom level for stability
 export const DEFAULT_ZOOM = 16;
+
+// Set the world origin using GPS coordinates (called only once when GPS is first activated)
+export function setWorldOrigin(lat, lon) {
+    if (!WORLD_ORIGIN.isCustom) {
+        WORLD_ORIGIN.lat = lat;
+        WORLD_ORIGIN.lon = lon;
+        WORLD_ORIGIN.isCustom = true;
+        console.log("World origin set to GPS position:", WORLD_ORIGIN);
+    }
+    return WORLD_ORIGIN;
+}
+
+// Reset world origin to default (Badajoz)
+export function resetWorldOrigin() {
+    WORLD_ORIGIN.lat = DEFAULT_ORIGIN.lat;
+    WORLD_ORIGIN.lon = DEFAULT_ORIGIN.lon;
+    WORLD_ORIGIN.isCustom = false;
+    return WORLD_ORIGIN;
+}
 
 // Convert latitude/longitude to tile coordinates (for map APIs)
 export function latLonToTile(lat, lon, zoom) {
@@ -24,7 +50,6 @@ export function tileToLatLon(x, y, zoom) {
 }
 
 // Calculate the scaling factor between world units and geographic coordinates
-// This scaling factor will ensure consistent world size regardless of tile size
 export function getScalingFactor(tileSize) {
     // Base scale for a reference tile size of 80
     const BASE_SCALE = 0.00025;
