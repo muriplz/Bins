@@ -1,11 +1,11 @@
 // src/views/MapView.vue
 <script setup>
-import { TresCanvas } from '@tresjs/core'
+import {TresCanvas} from '@tresjs/core'
 import OrbitControls from "../components/player/OrbitControls.vue"
-import { Sky, Stats } from '@tresjs/cientos'
+import {Sky, Stats} from '@tresjs/cientos'
 import PlayerEntity from "../components/player/PlayerEntity.vue"
 import TileRenderer from "../components/TileRenderer.vue"
-import { ref, onMounted } from 'vue'
+import {onMounted, ref} from 'vue'
 import InfinitePlane from "../components/InfinitePlane.vue";
 
 const showDebugInfo = ref(false)

@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, onUnmounted, ref, computed, watch, reactive } from 'vue';
-import { positionData } from './player/playerControls.js';
-import { tileLoader } from '../js/map/TileLoader.js';
-import { WORLD_ORIGIN } from "../js/map/tileConversion.js";
+import {computed, onMounted, onUnmounted, reactive, ref, watch} from 'vue';
+import {positionData} from './player/playerControls.js';
+import {tileLoader} from '../js/map/TileLoader.js';
+import {WORLD_ORIGIN} from "../js/map/TileConversion.js";
 import * as THREE from 'three';
 
 // Configuration
@@ -12,7 +12,6 @@ const config = {
   viewDistance: 4,
   centerLat: WORLD_ORIGIN.lat,
   centerLon: WORLD_ORIGIN.lon,
-  style: 'outdoors'
 };
 
 // Calculate center tile
@@ -77,7 +76,6 @@ function createMaterial(tile) {
 
   // Load the texture directly
   tileLoader.loadTile(tile.zoom, tile.mapX, tile.mapY, {
-    style: config.style,
     priority: 'high'
   })
       .then(texture => {

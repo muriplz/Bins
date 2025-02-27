@@ -1,7 +1,6 @@
 <script setup>
-import {header, showBackButton, tabs} from "../header.js";
+import {tabs} from "../header.js";
 import {TabList} from "primevue";
-import {ref} from "vue";
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 // src/store.js
-import { reactive } from 'vue'
+import {reactive} from 'vue'
 
 export const store = reactive({
     camera: null

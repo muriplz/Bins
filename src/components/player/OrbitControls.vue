@@ -1,8 +1,8 @@
 <script setup>
-import {CameraControls, BaseCameraControls} from '@tresjs/cientos'
-import {nextTick, onMounted, onUnmounted, reactive, ref, watch} from 'vue'
-import {positionData, setupControls, removeControls, setCameraInstance} from './playerControls.js'
-import {updateCameraPosition} from './cameraControls.js'
+import {BaseCameraControls, CameraControls} from '@tresjs/cientos'
+import {onMounted, onUnmounted, reactive, ref, watch} from 'vue'
+import {positionData, removeControls, setCameraInstance} from './playerControls.js'
+import * as THREE from 'three'
 
 const DRAG_SENSITIVITY = 1.20
 const MIN_DISTANCE = 2
@@ -17,34 +17,54 @@ const lastAngle = ref(0)
 const lastY = ref(0)
 const currentDistance = ref(10)
 
-const controlsRef = ref(null);
-const offsetPos = reactive({x: 0, y: 0, z: 0});
+const controlsRef = ref(null)
+const offsetPos = reactive({x: 0, y: 0, z: 0})
+const targetPosition = new THREE.Vector3()
+
+const updateCameraPosition = (position, offset, cameraControls, distance) => {
+  if (!cameraControls) return
+
+  targetPosition.set(
+      position.x,
+      position.y + 1.5,
+      position.z
+  )
+
+  const desiredX = position.x + offset.x
+  const desiredY = position.y + offset.y
+  const desiredZ = position.z + offset.z
+
+  cameraControls.setLookAt(
+      desiredX, desiredY, desiredZ,
+      targetPosition.x, targetPosition.y, targetPosition.z,
+      true
+  )
+}
 
 const onReady = (instance) => {
-  controlsRef.value = instance;
-  currentDistance.value = instance.distance;
+  controlsRef.value = instance
+  currentDistance.value = instance.distance
 
-  // Set initial position
   if (instance) {
-    instance.setTarget(positionData.x, positionData.y + 1.5, positionData.z);
-    instance.distance = currentDistance.value;
+    instance.setTarget(positionData.x, positionData.y + 1.5, positionData.z)
+    instance.distance = currentDistance.value
   }
 
   if (instance?._camera) {
-    setCameraInstance(instance._camera);
+    setCameraInstance(instance._camera)
   }
-};
+}
 
 watch(() => controlsRef.value?.instance?._camera, (newCamera) => {
   if (newCamera) {
-    console.log('Camera instance updated:', newCamera);
-    setCameraInstance(newCamera);
+    console.log('Camera instance updated:', newCamera)
+    setCameraInstance(newCamera)
   }
-}, { immediate: true });
+}, {immediate: true})
 
 onUnmounted(() => {
-  removeControls(); // Call removeControls
-});
+  removeControls()
+})
 
 onMounted(() => {
   const canvas = document.querySelector('canvas')
@@ -103,18 +123,18 @@ onMounted(() => {
               cameraControl.polarAngle - deltaY))
       cameraControl.polarAngle = newPolarAngle
     }
-    setOffset();
+    setOffset()
     cameraControl.update()
 
     lastAngle.value = currentAngle
     lastY.value = y
-    currentDistance.value = cameraControl.distance; // Update currentDistance
+    currentDistance.value = cameraControl.distance
   }
 
   const handleEnd = () => {
     isDragging.value = false
     if (controlsRef.value?.instance) {
-      currentDistance.value = controlsRef.value.instance.distance; // Update currentDistance
+      currentDistance.value = controlsRef.value.instance.distance
     }
   }
 
@@ -173,7 +193,7 @@ onMounted(() => {
       cameraControl.update()
 
       lastTouchDistance = distance
-      currentDistance.value = newDistance; // Update currentDistance
+      currentDistance.value = newDistance
     }
   })
 
@@ -193,33 +213,32 @@ onMounted(() => {
 
     cameraControl.distance = distance
     cameraControl.update()
-    currentDistance.value = distance; // Update currentDistance
+    currentDistance.value = distance
   }, {passive: false})
 
   onReady(controlsRef.value?.instance)
 
   if (controlsRef.value?.instance?._camera) {
-    setCameraInstance(controlsRef.value.instance._camera);
+    setCameraInstance(controlsRef.value.instance._camera)
   }
 })
 
 const setOffset = () => {
-  const target = controlsRef.value.instance._target;
-  const cameraPosition = controlsRef.value.instance._camera.position;
+  const target = controlsRef.value.instance._target
+  const cameraPosition = controlsRef.value.instance._camera.position
 
-  // Calculate offset from camera to target (reversed from your original)
-  offsetPos.x = (!isNaN(target.x) && !isNaN(cameraPosition.x)) ? cameraPosition.x - target.x : 0;
-  offsetPos.y = (!isNaN(target.y) && !isNaN(cameraPosition.y)) ? cameraPosition.y - target.y : 0;
-  offsetPos.z = (!isNaN(target.z) && !isNaN(cameraPosition.z)) ? cameraPosition.z - target.z : 0;
-};
+  offsetPos.x = (!isNaN(target.x) && !isNaN(cameraPosition.x)) ? cameraPosition.x - target.x : 0
+  offsetPos.y = (!isNaN(target.y) && !isNaN(cameraPosition.y)) ? cameraPosition.y - target.y : 0
+  offsetPos.z = (!isNaN(target.z) && !isNaN(cameraPosition.z)) ? cameraPosition.z - target.z : 0
+}
 
 watch(positionData, (newPosition) => {
-  setOffset();
-  updateCameraPosition(newPosition, offsetPos, controlsRef.value.instance, currentDistance.value);
+  setOffset()
+  updateCameraPosition(newPosition, offsetPos, controlsRef.value.instance, currentDistance.value)
   if (controlsRef.value?.instance) {
-    controlsRef.value.instance.setTarget(newPosition.x, newPosition.y, newPosition.z);
+    controlsRef.value.instance.setTarget(newPosition.x, newPosition.y, newPosition.z)
   }
-}, {deep: true});
+}, {deep: true})
 </script>
 
 <template>

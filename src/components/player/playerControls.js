@@ -1,4 +1,4 @@
-import { reactive } from 'vue';
+import {reactive} from 'vue';
 import * as THREE from 'three';
 
 const positionData = reactive({ x: 0, y: 0, z: 0 });

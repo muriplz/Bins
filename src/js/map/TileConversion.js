@@ -1,4 +1,4 @@
-// tileConversion.js - Fixed version
+// TileConversion.js - Fixed version
 // Define the world origin (geographic coordinates of the center of your game world)
 export const WORLD_ORIGIN = {
     lat: 43.4623, // Santander

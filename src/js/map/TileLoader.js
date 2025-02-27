@@ -1,4 +1,4 @@
-import { getIpAddress } from "../static.js";
+import {getIpAddress} from "../static.js";
 import * as THREE from 'three';
 
 export class TileLoader {
@@ -18,13 +18,12 @@ export class TileLoader {
      * @param {number} zoom - Zoom level
      * @param {number} x - Tile X coordinate
      * @param {number} y - Tile Y coordinate
-     * @param {Object} options - Options like style
+     * @param {Object} options - Options
      * @returns {Promise<THREE.Texture>}
      */
     loadTile(zoom, x, y, options = {}) {
-        const style = options.style || 'default';
         const priority = options.priority || 'normal';
-        const cacheKey = `${zoom}/${x}/${y}/${style}`;
+        const cacheKey = `${zoom}/${x}/${y}}`;
 
         // Return cached tile if available
         if (this.cache.has(cacheKey)) {
@@ -37,12 +36,6 @@ export class TileLoader {
         canvas.height = 256;
         const ctx = canvas.getContext('2d');
 
-        // Different color placeholder based on style
-        if (style === 'no-labels') {
-            ctx.fillStyle = '#e8e0d8'; // Neutral beige for map without labels
-        } else {
-            ctx.fillStyle = '#cccccc'; // Default gray
-        }
         ctx.fillRect(0, 0, 256, 256);
 
         // Create initial texture from canvas
@@ -55,7 +48,7 @@ export class TileLoader {
 
         // Queue for loading
         const loadRequest = {
-            zoom, x, y, style,
+            zoom, x, y,
             texture,
             canvas,
             cacheKey,
@@ -112,13 +105,10 @@ export class TileLoader {
     }
 
     loadTileData(request) {
-        const { zoom, x, y, style, texture, canvas, cacheKey, resolve, reject } = request;
+        const { zoom, x, y, texture, canvas, cacheKey, resolve, reject } = request;
 
-        // Construct URL with style parameter if needed
+        // Construct URL
         let url = `${this.baseUrl}/${zoom}/${x}/${y}`;
-        if (style && style !== 'default') {
-            url += `?style=${style}`;
-        }
 
         return new Promise((resolveLoad) => {
             try {

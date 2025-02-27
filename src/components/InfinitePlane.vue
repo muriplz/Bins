@@ -1,8 +1,8 @@
 // src/components/InfinitePlane.vue
 <script setup>
-import { onMounted, ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import * as THREE from 'three'
-import { useTresContext } from '@tresjs/core'
+import {useTresContext} from '@tresjs/core'
 
 const { scene, camera } = useTresContext()
 const gridRef = ref(null)
